@@ -1,0 +1,59 @@
+{
+  "variables": {
+    "dateFormat": "YYYY-MM-DD",
+    "timeFormat": "HH:mm:ss",
+    "globalCsvPath": "var(globalCapturePath)/CSV/var(name).csv",
+    "globalCapturePath": "Captures",
+    "listsPath": "var(globalCapturePath)/Lists",
+    "peopleList": "var(listsPath)/People.md"
+  },
+  "categories": {
+    "Reading List": {
+      "name": "Reading List",
+      "icon": "📚",
+      "csvPath": "var(globalCsvPath)",
+      "disabledCommentField": true,
+      "fields": [
+        {
+          "name": "Book Title",
+          "prompt": "inputPrompt",
+          "format": {
+            "italics": true
+          },
+          "prefix": "[book:: ",
+          "suffix": "]",
+          "write": true,
+          "required": true
+        },
+        {
+          "name": "Author",
+          "prompt": "inputPrompt",
+          "prefix": "by ",
+          "write": true,
+          "required": true
+        },
+        {
+          "name": "Recommended by",
+          "prompt": "suggester",
+          "listPath": "var(peopleList)",
+          "format": {
+            "bold": true
+          },
+          "prefix": "recommended by [[",
+          "suffix": "]]",
+          "write": true
+        }
+      ],
+      "notes": [
+        {
+          "path": "var(globalCapturePath)/",
+          "topOrBottom": "top",
+          "asTodo": true,
+          "header": "# [[var(date)]]",
+          "writeDate": true,
+          "writeTime": false
+        }
+      ]
+    }
+  }
+}

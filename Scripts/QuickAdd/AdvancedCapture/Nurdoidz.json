@@ -1,0 +1,361 @@
+{
+  "variables": {
+    "dateFormat": "YYYY-MM-DD",
+    "timeFormat": "HH:mm:ss",
+    "globalCsvPath": "var(globalCapturePath)/CSV/var(name).csv",
+    "globalCapturePath": "Journal",
+    "listsPath": "var(globalCapturePath)/Lists",
+    "sortCategories": false,
+    "debug": true
+  },
+  "categories": {
+    "Anime": {
+      "name": "Anime",
+      "icon": "👁",
+      "csvPath": "var(globalCsvPath)",
+      "fields": [
+        {
+          "name": "Anime Title",
+          "prompt": "suggester",
+          "listPath": "var(listsPath)/Anime List.md",
+          "format": {
+            "italics": true
+          },
+          "write": true,
+          "required": true
+        },
+        {
+          "name": "Episode",
+          "prompt": "inputPrompt",
+          "prefix": "e",
+          "write": true
+        },
+        {
+          "name": "Rating",
+          "prompt": "inputPrompt",
+          "format": {
+            "bold": true
+          },
+          "write": true
+        }
+      ],
+      "notes": [
+        {
+          "path": "var(globalCapturePath)/",
+          "topOrBottom": "top",
+          "header": "# [[var(date)]]",
+          "linkDate": true
+        }
+      ]
+    },
+    "Bible": {
+      "name": "Bible",
+      "icon": "📖",
+      "csvPath": "var(globalCsvPath)",
+      "fields": [
+        {
+          "name": "Book",
+          "prompt": "suggester",
+          "listPath": "var(listsPath)/Books of the Bible.md",
+          "format": {
+            "italics": true
+          },
+          "write": true,
+          "required": true
+        },
+        {
+          "name": "Chapter",
+          "prompt": "inputPrompt",
+          "prefix": "ch",
+          "write": true
+        }
+      ],
+      "notes": [
+        {
+          "path": "var(globalCapturePath)/",
+          "topOrBottom": "top",
+          "header": "# [[var(date)]]",
+          "linkDate": true
+        }
+      ]
+    },
+    "Code": {
+      "name": "Code",
+      "icon": "🚀",
+      "csvPath": "var(globalCsvPath)",
+      "fields": [
+        {
+          "name": "Project",
+          "prompt": "suggester",
+          "listPath": "var(listsPath)/Project List.md",
+          "format": {
+            "italics": true
+          },
+          "write": true,
+          "required": true
+        },
+        {
+          "name": "Action",
+          "prompt": "suggester",
+          "listPath": "var(listsPath)/Code Actions.md",
+          "hasIcons": true,
+          "prefix": "(",
+          "suffix": ")",
+          "write": true,
+          "required": true
+        }
+      ],
+      "notes": [
+        {
+          "path": "var(globalCapturePath)/",
+          "topOrBottom": "top",
+          "header": "# [[var(date)]]",
+          "linkDate": true
+        }
+      ]
+    },
+    "Cook": {
+      "name": "Cook",
+      "icon": "🥘",
+      "csvPath": "var(globalCsvPath)",
+      "fields": [
+        {
+          "name": "Recipe",
+          "prompt": "suggester",
+          "listPath": "var(listsPath)/Food List.md",
+          "format": {
+            "italics": true
+          },
+          "write": true,
+          "required": true
+        },
+        {
+          "name": "Rating",
+          "prompt": "inputPrompt",
+          "format": {
+            "bold": true
+          },
+          "write": true
+        }
+      ],
+      "notes": [
+        {
+          "path": "var(globalCapturePath)/",
+          "topOrBottom": "top",
+          "header": "# [[var(date)]]",
+          "linkDate": true
+        }
+      ]
+    },
+    "Faith": {
+      "name": "Faith",
+      "icon": "🕊️",
+      "csvPath": "var(globalCsvPath)",
+      "fields": [
+        {
+          "name": "Action",
+          "prompt": "suggester",
+          "listPath": "var(listsPath)/Faith Actions.md",
+          "format": {
+            "italics": true
+          },
+          "write": true,
+          "required": true
+        }
+      ],
+      "notes": [
+        {
+          "path": "var(globalCapturePath)/",
+          "topOrBottom": "top",
+          "header": "# [[var(date)]]",
+          "linkDate": true
+        }
+      ]
+    },
+    "Japanese": {
+      "name": "Japanese",
+      "icon": "🏯",
+      "csvPath": "var(globalCsvPath)",
+      "fields": [
+        {
+          "name": "Action",
+          "prompt": "suggester",
+          "listPath": "var(listsPath)/Japanese Actions.md",
+          "format": {
+            "italics": true
+          },
+          "write": true,
+          "required": true
+        },
+        {
+          "name": "Action",
+          "prompt": "suggester",
+          "listPath": "var(listsPath)/Code Actions List.md",
+          "hasIcons": true,
+          "prefix": "(",
+          "suffix": ")",
+          "write": true,
+          "required": true
+        }
+      ],
+      "notes": [
+        {
+          "path": "var(globalCapturePath)/",
+          "topOrBottom": "top",
+          "header": "# [[var(date)]]",
+          "linkDate": true
+        }
+      ]
+    },
+    "Journal": {
+      "name": "Journal",
+      "icon": "📓",
+      "csvPath": "var(globalCsvPath)",
+      "notes": [
+        {
+          "path": "var(globalCapturePath)/",
+          "topOrBottom": "top",
+          "header": "# [[var(date)]]",
+          "linkDate": true
+        }
+      ]
+    },
+    "Quick Capture": {
+      "name": "Quick Capture",
+      "icon": "⚡",
+      "csvPath": "var(globalCsvPath)",
+      "notes": [
+        {
+          "path": "var(globalCapturePath)/",
+          "topOrBottom": "top",
+          "header": "# [[var(date)]]",
+          "linkDate": true,
+          "asTodo": true
+        }
+      ]
+    },
+    "Socialize": {
+      "name": "Socialize",
+      "icon": "💬",
+      "csvPath": "var(globalCsvPath)",
+      "fields": [
+        {
+          "name": "Person",
+          "prompt": "suggester",
+          "listPath": "var(listsPath)/List of People.md",
+          "prefix": "[[",
+          "suffix": "]]",
+          "write": true,
+          "required": true
+        }
+      ],
+      "notes": [
+        {
+          "path": "var(globalCapturePath)/",
+          "topOrBottom": "top",
+          "header": "# [[var(date)]]",
+          "linkDate": true
+        }
+      ]
+    },
+    "TV": {
+      "name": "TV",
+      "icon": "📺",
+      "csvPath": "var(globalCsvPath)",
+      "fields": [
+        {
+          "name": "Show Title",
+          "prompt": "suggester",
+          "listPath": "var(listsPath)/TV List.md",
+          "format": {
+            "italics": true
+          },
+          "write": true,
+          "required": true
+        },
+        {
+          "name": "Episode",
+          "prompt": "inputPrompt",
+          "prefix": "e",
+          "write": true
+        },
+        {
+          "name": "Rating",
+          "prompt": "inputPrompt",
+          "format": {
+            "bold": true
+          },
+          "write": true
+        }
+      ],
+      "notes": [
+        {
+          "path": "var(globalCapturePath)/",
+          "topOrBottom": "top",
+          "header": "# [[var(date)]]",
+          "linkDate": true
+        }
+      ]
+    },
+    "Target": {
+      "name": "Target",
+      "icon": "🎯",
+      "csvPath": "var(globalCsvPath)",
+      "fields": [
+        {
+          "name": "Target",
+          "prompt": "suggester",
+          "listPath": "var(listsPath)/Target List.md",
+          "format": {
+            "italics": true
+          },
+          "write": true,
+          "required": true
+        }
+      ],
+      "notes": [
+        {
+          "path": "var(globalCapturePath)/",
+          "topOrBottom": "top",
+          "header": "# [[var(date)]]",
+          "linkDate": true
+        }
+      ]
+    },
+    "Work": {
+      "name": "Work",
+      "icon": "💼",
+      "csvPath": "var(globalCsvPath)",
+      "fields": [
+        {
+          "name": "Action",
+          "prompt": "suggester",
+          "listPath": "var(listsPath)/Work Actions.md",
+          "format": {
+            "italics": true
+          },
+          "write": true,
+          "required": true
+        },
+        {
+          "name": "Involving",
+          "prompt": "suggester",
+          "listPath": "var(listsPath)/List of People.md",
+          "hasIcons": true,
+          "prefix": "[[",
+          "suffix": "]]",
+          "write": true,
+          "required": true
+        }
+      ],
+      "notes": [
+        {
+          "path": "var(globalCapturePath)/",
+          "topOrBottom": "top",
+          "header": "# [[var(date)]]",
+          "linkDate": true
+        }
+      ]
+    }
+  }
+}
