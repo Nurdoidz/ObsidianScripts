@@ -621,12 +621,16 @@ async function promptOptions() {
                     splitInput = reSplitInput.exec(writeableInput);
                     if (splitInput.length === 3) {
                         splitInput = splitInput.splice(1);
+                        if (typeof field.prefix === 'string') splitInput[1] = field.prefix + splitInput[1];
+                        if (typeof field.suffix === 'string') splitInput[1] = splitInput[1] + field.suffix;
                         splitInput[1] = formatField(splitInput[1], field.format);
                         writeableInput = splitInput.join(' ');
                     }
-                } else writeableInput = formatField(writeableInput, field.format);
-                if (typeof field.prefix === 'string') writeableInput = field.prefix + writeableInput;
-                if (typeof field.suffix === 'string') writeableInput = writeableInput + field.suffix;
+                } else {
+                    if (typeof field.prefix === 'string') writeableInput = field.prefix + writeableInput;
+                    if (typeof field.suffix === 'string') writeableInput = writeableInput + field.suffix;
+                    writeableInput = formatField(writeableInput, field.format);
+                }
                 input = replaceVar(input);
                 writeableInput = replaceVar(writeableInput);
                 if (field.write) writeableFields.push(writeableInput);
