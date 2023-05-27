@@ -1,0 +1,74 @@
+{
+  "variables": {
+    "sortCategories": false
+  },
+  "categories": {
+    "CATEGORY_1": {
+      "name": "CATEGORY_1",
+      "icon": "🍕",
+      "csvPath": "PATH_TO_CSV",
+      "todoDefault": false,
+      "fields": [
+        {
+          "name": "FIELD_1",
+          "prompt": "suggester",
+          "listPath": "PATH_TO_LIST",
+          "prefix": "FIELD_PREFIX",
+          "suffix": "FIELD_SUFFIX",
+          "format": {
+            "bold": false,
+            "italics": false,
+            "strikethrough": false,
+            "highlight": false
+          },
+          "notes": [
+            {
+              "path": "PATH_TO_NOTE_1",
+              "topOrBottom": "",
+              "header": "# HEADER",
+              "linkDate": false,
+              "asTodo": false
+            }
+          ],
+          "write": false,
+          "required": false
+        },
+        {
+          "name": "FIELD_2",
+          "prompt": "inputPrompt",
+          "prefix": "FIELD_PREFIX",
+          "suffix": "FIELD_SUFFIX",
+          "format": {
+            "bold": "..."
+          },
+          "write": false,
+          "required": false
+        },
+        {
+          "name": "FIELD_3",
+          "prompt": "wideInputPrompt",
+          "prefix": "FIELD_PREFIX",
+          "suffix": "FIELD_SUFFIX",
+          "format": {
+            "bold": "..."
+          },
+          "write": false,
+          "required": false
+        },
+        {
+          "name": "FIELD_4",
+          "prompt": "yesNoPrompt",
+          "prefix": "FIELD_PREFIX",
+          "suffix": "FIELD_SUFFIX",
+          "format": {
+            "bold": "..."
+          },
+          "write": false
+        }
+      ]
+    },
+    "CATEGORY_2": {
+      "name": "..."
+    }
+  }
+}

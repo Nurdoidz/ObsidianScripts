@@ -1,12 +1,9 @@
 {
   "variables": {
-    "dateFormat": "YYYY-MM-DD",
-    "timeFormat": "HH:mm:ss",
     "globalCsvPath": "var(globalCapturePath)/CSV/var(name).csv",
     "globalCapturePath": "Journal",
     "listsPath": "var(globalCapturePath)/Lists",
-    "sortCategories": false,
-    "debug": true
+    "sortCategories": false
   },
   "categories": {
     "Anime": {
@@ -88,6 +85,8 @@
           "name": "Project",
           "prompt": "suggester",
           "listPath": "var(listsPath)/Project List.md",
+          "prefix": "[[",
+          "suffix": "]]",
           "format": {
             "italics": true
           },
@@ -186,16 +185,6 @@
           },
           "write": true,
           "required": true
-        },
-        {
-          "name": "Action",
-          "prompt": "suggester",
-          "listPath": "var(listsPath)/Code Actions List.md",
-          "hasIcons": true,
-          "prefix": "(",
-          "suffix": ")",
-          "write": true,
-          "required": true
         }
       ],
       "notes": [
@@ -264,7 +253,7 @@
       "csvPath": "var(globalCsvPath)",
       "fields": [
         {
-          "name": "Show Title",
+          "name": "Title",
           "prompt": "suggester",
           "listPath": "var(listsPath)/TV List.md",
           "format": {
@@ -341,7 +330,6 @@
           "name": "Involving",
           "prompt": "suggester",
           "listPath": "var(listsPath)/List of People.md",
-          "hasIcons": true,
           "prefix": "[[",
           "suffix": "]]",
           "write": true,
