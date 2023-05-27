@@ -724,7 +724,7 @@ async function addCaptureToCsv() {
     }
     debug.info('!CSV file found', { Path: path });
     contents = await this.app.vault.read(file);
-    contents = contents.trim();
+    debug.info('!Read CSV file', { Contents: contents, Path: path });
     values = Object.values(fieldPairs);
     values.forEach((value, i, v) => {
         v[i] = (typeof value !== 'undefined' ? (shouldQuote(value) ? '"' + value + '"' : value) : '');
