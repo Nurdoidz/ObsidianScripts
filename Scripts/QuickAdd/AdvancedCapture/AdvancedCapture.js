@@ -1,16 +1,51 @@
-module.exports = main;
+const CONFIG_PATH = 'Path to configuration file';
+const EXPORTED_SEPARATOR = 'Exported separator';
+const DATE_FORMAT = 'Date format';
+const TIME_FORMAT = 'Time format';
 
-/**
- * Path to the user’s configuration file for AdvancedCapture, relative to
- * the vault’s root folder. Json format. Can be a variable, but the variable
- * will need to be set by other QuickAdd scripts or modules beforehand.
- * @example
- * // Default -->
- * const configPath = 'Journal/CaptureConfig.json';
- * // Variable -->
- * const configPath = 'var(todaysConfig)';
- */
-const configPath = 'Scripts/QuickAdd/AdvancedCapture/Nurdoidz.json';
+module.exports = {
+    entry: main,
+    settings: {
+        name: "AdvancedCapture",
+        author: "Nurdoidz",
+        options: {
+            [CONFIG_PATH]: {
+                type: "text",
+                defaultValue: "Scripts/QuickAdd/AdvancedCapture/Config.json",
+                placeholder: "path/to/config.json"
+            },
+            [DATE_FORMAT]: {
+                type: "text",
+                defaultValue: "YYYY-MM-DD",
+                placeholder: "YYYY-MM-DD"
+            },
+            [TIME_FORMAT]: {
+                type: "text",
+                defaultValue: "HH:mm:ss",
+                placeholder: "HH:mm:ss"
+            },
+            [EXPORTED_SEPARATOR]: {
+                type: "text",
+                defaultValue: "-",
+                placeholder: "default separator"
+            },
+            "SortAscending": {
+                type: "checkbox",
+                defaultValue: true
+            },
+            "SkipCapture": {
+                type: "checkbox",
+                defaultValue: false
+            },
+            "Debug": {
+                type: "checkbox",
+                defaultValue: false
+            }
+        }
+    }
+};
+
+let Settings;
 
 /**
  * The QuickAdd API. QuickAdd methods like `inputPrompt` are available.
@@ -55,14 +90,14 @@ var variables;
 
 /**
  * The user’s configuration for AdvancedCapture as a json object. This is parsed
- * from {@link configPath} and contains all settings and variables relevant to
+ * from {@link Settings[CONFIG_PATH]} and contains all settings and variables relevant to
  * AdvancedCapture. The original configuration file is never modified unless by
  * request of the user.
  */
 var config;
 
 /**
- * The main function for the AdvancedCapture plugin for QuickAdd. This function
+ * The main function for the AdvancedCapture addon for QuickAdd. This function
  * handles user prompts that are configured by a json file created by the user.
  * 
  * After getting input from the user, entries are added to CSV files and as single
@@ -71,21 +106,21 @@ var config;
  * Finally, variables are added to the QuickAdd instance so additional QuickAdd
  * scripts can use them. These variables also include those added in the
  * configuration file.
- * @param {object} params - passed by QuickAdd
+ * @param {object} quickAdd - QuickAdd
  * @returns 
  */
-async function main(params) {
+async function main(quickAdd, settings) {
 
+    Settings = settings;
+    quickAddApi = quickAdd.quickAddApi;
+    variables = quickAdd.variables;
     debug.info('!Starting');
-
-    quickAddApi = params.quickAddApi;
-    variables = params.variables;
 
     // --- Read config json
 
     let configGood = await readConfig();
     if (configGood !== true) {
-        if (configGood !== 2) debug.error('Error reading configuration file', { Path: configPath, ReturnValue: configGood });
+        if (configGood !== 2) debug.error('Error reading configuration file', { Path: Settings[CONFIG_PATH], ReturnValue: configGood });
         debug.info('!Stopping');
         return;
     }
@@ -94,15 +129,14 @@ async function main(params) {
     // modification by QuickCapture
 
     if (!variables) variables = {};
-    Object.keys(params.variables).forEach(key => variables[key] = params.variables[key]);
-    params.variables = variables;
+    Object.keys(quickAdd.variables).forEach(key => variables[key] = quickAdd.variables[key]);
+    quickAdd.variables = variables;
     debug.info('!Loaded settings from config');
 
     variables.config = config;
 
-    variables.skipCapture = (variables.skipCapture === true) || (replaceVar.skipCapture === 'true');
-    if (variables.skipCapture) {
-        debug.info('Skipping capture', { skipCapture: variables.skipCapture });
+    if (Settings.SkipCapture) {
+        debug.info('Skipping capture', { SkipCapture: Settings.SkipCapture });
         debug.info('!Stopping');
         // "I just needed the config, so I’ll be on my way" -->
         return;
@@ -117,9 +151,9 @@ async function main(params) {
 
     // --- Stamp date and time
 
-    let dateFormat = replaceVar(variables.dateFormat);
-    variables.date = fieldPairs.Date = quickAddApi.date.now(dateFormat);
-    let timeFormat = replaceVar(variables.timeFormat);
+    let dateFormat = replaceVar(Settings[DATE_FORMAT]);
+    variables.date = fieldPairs.Date = quickAddApi.date.now(dateFormat ? dateFormat : 'YYYY-MM-DD');
+    let timeFormat = replaceVar(Settings[TIME_FORMAT]);
     variables.time = fieldPairs.Time = quickAddApi.date.now(timeFormat ? timeFormat : 'HH:mm:ss');
 
     // --- Prompt user for input
@@ -129,6 +163,7 @@ async function main(params) {
         debug.info('!Stopping');
         return;
     }
+    variables.writeableLine = getWriteableLine();
 
     // --- Add to CSV file
 
@@ -163,13 +198,11 @@ async function main(params) {
  */
 async function readConfig() {
 
-    // --- Read config file
+    debug.info('!Reading configuration file', { Path: Settings[CONFIG_PATH] });
 
-    debug.info('!Reading configuration file', { Path: configPath });
-
-    let path = getValidPath(replaceVar(configPath), '.json');
+    let path = getValidPath(replaceVar(Settings[CONFIG_PATH]), '.json');
     if (!path) {
-        debug.error('Invalid path for configuration', { Path: configPath });
+        debug.error('Invalid path for configuration', { Path: Settings[CONFIG_PATH] });
         return false;
     }
     let file = this.app.vault.getAbstractFileByPath(path);
@@ -254,10 +287,10 @@ async function sortCategories(path, file) {
 
     debug.info('!Preparing category sort');
     let map;
-    if (config.variables.sortAscending === false) {
-        map = new Map([...Object.entries(config.categories)].sort().reverse());
-    } else {
+    if (Settings.SortAscending) {
         map = new Map([...Object.entries(config.categories)].sort());
+    } else {
+        map = new Map([...Object.entries(config.categories)].sort().reverse());
     }
     const sortedCategories = {};
     let hasCategories = false;
@@ -312,7 +345,7 @@ async function addCaptureToNotes() {
         if (!validFilePath) validPath = getValidPath(validPath);
 
         if (validPath) {
-            if (validPath.endsWith('/')) validPath += (icon ? icon + '' : '') + name + '.md';
+            if (validPath.endsWith('/')) validPath += (icon ? icon + ' ' : '') + name + '.md';
             let file = this.app.vault.getAbstractFileByPath(validPath);
             if (file) {
                 files.push(file);
@@ -476,6 +509,7 @@ async function promptOptions() {
             field.name = field.name.replace(reMatchCommas, '');
         }
         let input;
+        let writeableInput;
         debug.info('Prompting for input', { Field: field.name, Category: category.name });
 
         // --- Based on input type of the field ---
@@ -486,26 +520,29 @@ async function promptOptions() {
                 if (field.prompt === 'wideInputPrompt') {
                     input = await quickAddApi.wideInputPrompt(field.name + (field.required ? ' (Required)' : ''));
                 } else input = await quickAddApi.inputPrompt(field.name + (field.required ? ' (Required)' : ''));
-                if (typeof field.prefix === 'string') input = field.prefix + input;
-                if (typeof field.suffix === 'string') input = input + field.suffix;
                 input = replaceVar(input);
+                writeableInput = input;
+                if (typeof field.prefix === 'string') writeableInput = field.prefix + writeableInput;
+                if (typeof field.suffix === 'string') writeableInput += field.suffix;
+                writeableInput = replaceVar(writeableInput);
                 if (!input && input != '0') {
                     if (field.required) {
                         debug.error('No input received for required field', { Input: input, Required: field.required, Field: field.name, Category: category });
                         return false;
                     }
                     input = '';
-                } else if (field.write) writeableFields.push(formatField(input, field.format));
+                } else if (field.write) writeableFields.push(formatField(writeableInput, field.format));
                 break;
 
             case "yesNoPrompt":
                 input = await quickAddApi.yesNoPrompt(field.name);
-                if (typeof field.prefix === 'string') input = field.prefix + input;
-                if (typeof field.suffix === 'string') input = input + field.suffix;
-                input = replaceVar(input);
+                writeableInput = input;
+                if (typeof field.prefix === 'string') writeableInput = field.prefix + writeableInput;
+                if (typeof field.suffix === 'string') writeableInput += field.suffix;
+                writeableInput = replaceVar(writeableInput);
                 if (typeof input !== 'boolean') {
                     debug.error('No input received', { Input: input, Field: field.name, Category: category.name });
-                } else if (field.write) writeableFields.push(formatField(input, field.format));
+                } else if (field.write) writeableFields.push(formatField(writeableInput, field.format));
                 break;
 
             case "suggester":
@@ -578,7 +615,7 @@ async function promptOptions() {
                         }
                     }
                 } while (input === '!add');
-                let writeableInput = input;
+                writeableInput = input;
                 if (field.hasIcons === true) {
                     reSplitInput = RegExp(/^(\S+)\s+(.+)/g);
                     splitInput = reSplitInput.exec(writeableInput);
@@ -588,10 +625,10 @@ async function promptOptions() {
                         writeableInput = splitInput.join(' ');
                     }
                 } else writeableInput = formatField(writeableInput, field.format);
-                if (typeof field.prefix === 'string') input = field.prefix + input;
-                if (typeof field.suffix === 'string') input = input + field.suffix;
-
+                if (typeof field.prefix === 'string') writeableInput = field.prefix + writeableInput;
+                if (typeof field.suffix === 'string') writeableInput = writeableInput + field.suffix;
                 input = replaceVar(input);
+                writeableInput = replaceVar(writeableInput);
                 if (field.write) writeableFields.push(writeableInput);
                 // Who puts emojis in CSV files? -->
                 if (field.hasIcons) input = input.replace(/^\S+\s+/g, '');
@@ -692,6 +729,20 @@ async function addCaptureToCsv() {
     debug.info('!Capture added to CSV', { Capture: fieldPairs, Path: path });
     return true;
 
+}
+
+/**
+ * Returns a markdown-formatted string containing only values obtained by
+ * prompts. Automatically generated values including the date, time, or todo
+ * formatting is omitted.
+ * @returns {string} a markdown-formatted string, including the default
+ * separator
+ */
+function getWriteableLine() {
+    debug.warn('BREAKPOINT');
+    let separator = replaceVar(Settings[EXPORTED_SEPARATOR]);
+    if (separator.length > 0) separator = ' ' + separator + ' ';
+    return variables.writeableFields.join(separator);
 }
 
 /**
@@ -866,12 +917,10 @@ const debug = {
     log: (type, str, kvObj) => {
         if (typeof str !== 'string') str = '';
         if (typeof type === 'undefined') return;
-        let debugging = true;
-        if (variables) debugging = (variables.debug !== false);
         if (type !== 'Warning' || type !== 'Error') {
             if (str.startsWith('!')) {
                 str = str.substring(1);
-            } else if (!debugging) return;
+            } else if (!Settings.Debug) return;
         }
 
         let isOneLine = false;
@@ -881,11 +930,6 @@ const debug = {
         } else if (
             (Object.keys(kvObj).length == 1) && (typeof Object.values(kvObj)[0] !== 'object')
         ) hasSingleKey = true;
-        // } else if (Object.keys(kvObj).length == 1) {
-        //     if (typeof Object.values(kvObj)[0] !== 'object') {
-        //         hasSingleKey = true;
-        //     }
-        // }
 
         let suffix = '';
         let prefix = '%c[AdvancedCapture]%c ';
