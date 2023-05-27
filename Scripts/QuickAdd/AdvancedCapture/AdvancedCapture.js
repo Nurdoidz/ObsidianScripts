@@ -722,6 +722,7 @@ async function addCaptureToCsv() {
         }
         debug.info('CSV file created', { Path: path });
     }
+    debug.info('!CSV file found', { Path: path });
     contents = await this.app.vault.read(file);
     contents = contents.trim();
     values = Object.values(fieldPairs);
@@ -730,7 +731,7 @@ async function addCaptureToCsv() {
     });
     contents += values.join(',') + '\n';
     this.app.vault.modify(file, contents);
-    debug.info('!Capture added to CSV', { Capture: fieldPairs, Path: path });
+    debug.info('!Capture added to CSV', { Contents: contents, Capture: fieldPairs, Path: path });
     return true;
 
 }
