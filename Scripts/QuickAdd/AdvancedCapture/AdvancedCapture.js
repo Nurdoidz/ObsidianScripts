@@ -724,7 +724,7 @@ async function addCaptureToCsv() {
     values.forEach((value, i, v) => {
         v[i] = (typeof value !== 'undefined' ? (shouldQuote(value) ? '"' + value + '"' : value) : '');
     });
-    contents += '\n' + values.join(',');
+    contents += values.join(',') + '\n';
     this.app.vault.modify(file, contents);
     debug.info('!Capture added to CSV', { Capture: fieldPairs, Path: path });
     return true;
@@ -739,7 +739,6 @@ async function addCaptureToCsv() {
  * separator
  */
 function getWriteableLine() {
-    debug.warn('BREAKPOINT');
     let separator = replaceVar(Settings[EXPORTED_SEPARATOR]);
     if (separator.length > 0) separator = ' ' + separator + ' ';
     return variables.writeableFields.join(separator);
